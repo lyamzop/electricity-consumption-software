@@ -68,7 +68,8 @@
             <p><strong>Billable DMD:</strong> रू<span id="billableDMD"></span></p>
             <p><strong>Total Amount (Before Discount):</strong> रू<span id="totalAmount"></span></p>
             <p><strong>Discount:</strong> रू<span id="discount"></span></p>
-            <p><strong>Total Amount (After Discount):</strong> रू<span id="finalAmount"></span></p>
+            <p><strong>Fine:</strong> रू<span id="fine"></span></p>
+            <p><strong>Total Amount (After Discount and Fine):</strong> रू<span id="finalAmount"></span></p>
         </div>
     </div>
 
@@ -111,7 +112,18 @@
                 discount = totalAmount * 0.05;
             }
 
-            const finalAmount = totalAmount - discount;
+            let fine = 0;
+            const daysDifference = Math.floor((paymentDate - readingDate) / (1000 * 60 * 60 * 24));
+
+            if (daysDifference > 15 && daysDifference <= 30) {
+                fine = totalAmount * 0.05;
+            } else if (daysDifference >= 31 && daysDifference <= 40) {
+                fine = totalAmount * 0.10;
+            } else if (daysDifference >= 41) {
+                fine = totalAmount * 0.25;
+            }
+
+            const finalAmount = totalAmount - discount + fine;
 
             document.getElementById('units').innerText = unitsConsumed.toFixed(2);
             document.getElementById('costPerUnit').innerText = perUnitCost.toFixed(2);
@@ -119,6 +131,7 @@
             document.getElementById('billableDMD').innerText = billableDMD.toFixed(2);
             document.getElementById('totalAmount').innerText = totalAmount.toFixed(2);
             document.getElementById('discount').innerText = discount.toFixed(2);
+            document.getElementById('fine').innerText = fine.toFixed(2);
             document.getElementById('finalAmount').innerText = finalAmount.toFixed(2);
 
             document.getElementById('result').style.display = 'block';

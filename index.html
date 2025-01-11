@@ -64,6 +64,8 @@
             <h2>Bill Details</h2>
             <p><strong>Total Units Consumed:</strong> <span id="units"></span></p>
             <p><strong>Cost Per Unit:</strong> रू<span id="costPerUnit"></span></p>
+            <p><strong>Minimum Charge:</strong> रू<span id="minimumCharge"></span></p>
+            <p><strong>Billable DMD:</strong> रू<span id="billableDMD"></span></p>
             <p><strong>Total Amount (Before Discount):</strong> रू<span id="totalAmount"></span></p>
             <p><strong>Discount:</strong> रू<span id="discount"></span></p>
             <p><strong>Total Amount (After Discount):</strong> रू<span id="finalAmount"></span></p>
@@ -82,7 +84,24 @@
                 return;
             }
 
-            const totalAmount = unitsConsumed * perUnitCost;
+            let minimumCharge = 0;
+            let billableDMD = 0;
+
+            if (unitsConsumed >= 0 && unitsConsumed <= 20) {
+                minimumCharge = 30;
+                billableDMD = 0;
+            } else if (unitsConsumed >= 21 && unitsConsumed <= 30) {
+                minimumCharge = 50;
+                billableDMD = 6.5;
+            } else if (unitsConsumed >= 31 && unitsConsumed <= 50) {
+                minimumCharge = 70;
+                billableDMD = 8;
+            } else if (unitsConsumed > 50) {
+                minimumCharge = 100;
+                billableDMD = 10;
+            }
+
+            const totalAmount = Math.max(unitsConsumed * perUnitCost, minimumCharge + billableDMD);
 
             let discount = 0;
             const discountDeadline = new Date(readingDate);
@@ -96,6 +115,8 @@
 
             document.getElementById('units').innerText = unitsConsumed.toFixed(2);
             document.getElementById('costPerUnit').innerText = perUnitCost.toFixed(2);
+            document.getElementById('minimumCharge').innerText = minimumCharge.toFixed(2);
+            document.getElementById('billableDMD').innerText = billableDMD.toFixed(2);
             document.getElementById('totalAmount').innerText = totalAmount.toFixed(2);
             document.getElementById('discount').innerText = discount.toFixed(2);
             document.getElementById('finalAmount').innerText = finalAmount.toFixed(2);

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electricity Consumption Calculator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #e9ecef;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin-top: 50px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+        #result {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Electricity Consumption Calculator</h1>
+        <form id="consumptionForm" class="mt-4">
+            <div class="mb-3">
+                <label for="readingDate" class="form-label">Reading Date</label>
+                <input type="date" class="form-control" id="readingDate" required>
+            </div>
+            <div class="mb-3">
+                <label for="unitsConsumed" class="form-label">Number of Units Consumed</label>
+                <input type="number" class="form-control" id="unitsConsumed" min="1" required>
+            </div>
+            <div class="mb-3">
+                <label for="perUnitCost" class="form-label">Cost Per Unit (रू)</label>
+                <input type="number" class="form-control" id="perUnitCost" step="0.01" min="0" required>
+            </div>
+            <div class="mb-3">
+                <label for="paymentDate" class="form-label">Payment Date</label>
+                <input type="date" class="form-control" id="paymentDate" required>
+            </div>
+            <button type="button" class="btn btn-primary w-100" onclick="calculateBill()">Calculate Bill</button>
+        </form>
+
+        <div class="mt-4" id="result" style="display: none;">
+            <h2>Bill Details</h2>
+            <p><strong>Total Units Consumed:</strong> <span id="units"></span></p>
+            <p><strong>Cost Per Unit:</strong> रू<span id="costPerUnit"></span></p>
+            <p><strong>Total Amount (Before Discount):</strong> रू<span id="totalAmount"></span></p>
+            <p><strong>Discount:</strong> रू<span id="discount"></span></p>
+            <p><strong>Total Amount (After Discount):</strong> रू<span id="finalAmount"></span></p>
+        </div>
+    </div>
+
+    <script>
+        function calculateBill() {
+            const readingDate = new Date(document.getElementById('readingDate').value);
+            const paymentDate = new Date(document.getElementById('paymentDate').value);
+            const unitsConsumed = parseFloat(document.getElementById('unitsConsumed').value);
+            const perUnitCost = parseFloat(document.getElementById('perUnitCost').value);
+
+            if (isNaN(unitsConsumed) || isNaN(perUnitCost)) {
+                alert('Please enter valid numbers for units and cost per unit.');
+                return;
+            }
+
+            const totalAmount = unitsConsumed * perUnitCost;
+
+            let discount = 0;
+            const discountDeadline = new Date(readingDate);
+            discountDeadline.setDate(discountDeadline.getDate() + 15);
+
+            if (paymentDate <= discountDeadline) {
+                discount = totalAmount * 0.05;
+            }
+
+            const finalAmount = totalAmount - discount;
+
+            document.getElementById('units').innerText = unitsConsumed.toFixed(2);
+            document.getElementById('costPerUnit').innerText = perUnitCost.toFixed(2);
+            document.getElementById('totalAmount').innerText = totalAmount.toFixed(2);
+            document.getElementById('discount').innerText = discount.toFixed(2);
+            document.getElementById('finalAmount').innerText = finalAmount.toFixed(2);
+
+            document.getElementById('result').style.display = 'block';
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
